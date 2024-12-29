@@ -22,11 +22,11 @@ var validateCmd = &cobra.Command{
 
 		// Check if the file exists
 		if _, err := os.Stat(file); os.IsNotExist(err) {
-			fmt.Printf("❌ Configuration file not found: %s\n", file)
+			fmt.Fprintf(cmd.OutOrStdout(), "Configuration file not found: %s\n", file)
 			return
 		}
 
-		fmt.Printf("✅ Validating configuration file: %s\n", file)
+		fmt.Fprintf(cmd.OutOrStdout(), "Validating configuration file: %s\n", file)
 
 		// Add your validation logic here
 		// Example: validateConfig(file)
@@ -36,3 +36,4 @@ var validateCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(validateCmd)
 }
+
