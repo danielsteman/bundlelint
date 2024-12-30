@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -21,16 +20,6 @@ func TestValidateCommand_DefaultFile(t *testing.T) {
 	// Initialize rootCmd with validateCmd
 	testRootCmd := &cobra.Command{Use: "bundlelint"}
 	testRootCmd.AddCommand(validateCmd)
-
-	cwd, err := os.Getwd()
-	if err != nil {
-		t.Fatalf("Failed to get current working directory: %v", err)
-	}
-	println(cwd)
-
-	s := "/hoi"
-	strings.Split(s, "")
-	println(s[0])
 
 	// Capture the output of the command
 	output := executeCommand(testRootCmd, "validate", "../test_bundle")

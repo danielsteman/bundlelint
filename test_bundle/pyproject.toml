@@ -5,4 +5,4 @@ description = ""
 authors = []
 
 [tool.bundlelint]
-notifications_in_prod = true
+notifications_in_prod = "hoi"
