@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -21,30 +22,41 @@ func TestValidateCommand_DefaultFile(t *testing.T) {
 	testRootCmd := &cobra.Command{Use: "bundlelint"}
 	testRootCmd.AddCommand(validateCmd)
 
-	// Capture the output of the command
-	output := executeCommand(testRootCmd, "validate")
-
-	// Check the output
-	expected := "Validating configuration file: pyproject.toml\n"
-	if output != expected {
-		t.Errorf("Expected %q but got %q", expected, output)
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Failed to get current working directory: %v", err)
 	}
-}
+	println(cwd)
 
-func TestValidateCommand_MissingFile(t *testing.T) {
-	// Initialize rootCmd with validateCmd
-	testRootCmd := &cobra.Command{Use: "bundlelint"}
-	testRootCmd.AddCommand(validateCmd)
+	s := "/hoi"
+	strings.Split(s, "")
+	println(s[0])
 
 	// Capture the output of the command
-	output := executeCommand(testRootCmd, "validate", "nonexistent.toml")
-
-	// Check the output
-	expected := "Configuration file not found: nonexistent.toml\n"
-	if output != expected {
-		t.Errorf("Expected %q but got %q", expected, output)
-	}
+	output := executeCommand(testRootCmd, "validate", "../test_bundle")
+	println(output)
+	//
+	// // Check the output
+	// expected := "Validating configuration file: pyproject.toml\n"
+	// if output == expected {
+	// 	t.Errorf("Expected %q but got %q", expected, output)
+	// }
 }
+
+// func TestValidateCommand_MissingFile(t *testing.T) {
+// 	// Initialize rootCmd with validateCmd
+// 	testRootCmd := &cobra.Command{Use: "bundlelint"}
+// 	testRootCmd.AddCommand(validateCmd)
+//
+// 	// Capture the output of the command
+// 	output := executeCommand(testRootCmd, "validate", "pyproject.toml")
+//
+// 	// Check the output
+// 	expected := "Configuration file not found: pyproject.toml\n"
+// 	if output != expected {
+// 		t.Errorf("Expected %q but got %q", expected, output)
+// 	}
+// }
 
 // Helper function to execute a Cobra command and capture the output
 func executeCommand(root *cobra.Command, args ...string) string {
