@@ -2,3 +2,7 @@ resources:
   jobs:
     test_job:
       name: test_job
+      tasks:
+        - task_key: test_job
+          spark_python_task:
+            python_file: ./test_package/main.py
