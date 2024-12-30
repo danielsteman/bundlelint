@@ -1,0 +1,16 @@
+bundle:
+  name: test_bundle
+
+include:
+  - resources.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://workspace-id.cloud.databricks.com
+  prod:
+    mode: production
+    workspace:
+      host: https://workspace-id.cloud.databricks.com
