@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/BurntSushi/toml"
+	"github.com/pelletier/go-toml/v2"
 	"gopkg.in/yaml.v2"
 )
 
@@ -25,12 +25,6 @@ func ParseBundleConfig(path string) (*BundleConfig, error) {
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return nil, fmt.Errorf("failed to parse bundle config: %w", err)
 	}
-
-	// _, err = jobs.Job(config)
-	//
-	// if err != nil {
-	// 	return nil, fmt.Errorf("bundle config validation failed: %w", err)
-	// }
 
 	return &config, nil
 }
