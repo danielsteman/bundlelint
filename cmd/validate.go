@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +12,7 @@ func ValidateConfigs(bundleConfig *BundleConfig, bundleLintConfig *BundleLintCon
 }
 
 var validateCmd = &cobra.Command{
-	Use:   "validate [file]",
+	Use:   "validate [bundle_path]",
 	Short: "Validate a Databricks asset bundle config",
 	Long:  "Validate a Databricks asset bundle configuration file against user-defined rules.",
 	Args:  cobra.MaximumNArgs(1),
