@@ -8,7 +8,12 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type BundleName struct {
+	name string
+}
+
 type BundleConfig struct {
+	bundle BundleName
 }
 
 type BundleLintConfig struct {
@@ -21,10 +26,14 @@ func ParseBundleConfig(path string) (*BundleConfig, error) {
 		return nil, fmt.Errorf("failed to read bundle config: %w", err)
 	}
 
+	fmt.Println(data)
+
 	var config BundleConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return nil, fmt.Errorf("failed to parse bundle config: %w", err)
 	}
+
+	fmt.Println(config)
 
 	return &config, nil
 }
