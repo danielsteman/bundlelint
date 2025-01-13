@@ -16,7 +16,7 @@ type BundleConfig struct {
 	bundle BundleName
 }
 
-type BundleLintConfig struct {
+type LintConfig struct {
 	notifications_in_prod bool
 }
 
@@ -38,7 +38,7 @@ func ParseBundleConfig(path string) (*BundleConfig, error) {
 	return &config, nil
 }
 
-func ParseBundleLintConfig(path string) (*BundleLintConfig, error) {
+func ParseLintConfig(path string) (*LintConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read package config: %w", err)
@@ -59,7 +59,7 @@ func ParseBundleLintConfig(path string) (*BundleLintConfig, error) {
 		return nil, fmt.Errorf("[tool.bundlelint] section not found in package config")
 	}
 
-	var lintConfig BundleLintConfig
+	var lintConfig LintConfig
 	if err := mapToStruct(bundlelint, &lintConfig); err != nil {
 		return nil, fmt.Errorf("failed to parse [tool.bundlelint] section: %w", err)
 	}

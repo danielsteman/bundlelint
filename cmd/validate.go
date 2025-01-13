@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func ValidateConfigs(bundleConfig *BundleConfig, bundleLintConfig *BundleLintConfig) bool {
+func ValidateConfigs(bundleConfig *BundleConfig, lintConfig *LintConfig) bool {
 	return true
 }
 
@@ -52,15 +52,15 @@ var validateCmd = &cobra.Command{
 			return
 		}
 
-		bundleLintConfig, err := ParseBundleLintConfig(configFile)
+		LintConfig, err := ParseLintConfig(configFile)
 		if err != nil {
 			fmt.Fprintf(cmd.OutOrStdout(), "Error parsing package config: %s\n", err)
 			return
 		}
 
-		fmt.Println(bundleLintConfig)
+		fmt.Println(LintConfig)
 
-		if ValidateConfigs(bundleConfig, bundleLintConfig) {
+		if ValidateConfigs(bundleConfig, LintConfig) {
 			fmt.Fprintf(cmd.OutOrStdout(), "Validation successful!\n")
 		} else {
 			fmt.Fprintf(cmd.OutOrStdout(), "Validation failed!\n")
