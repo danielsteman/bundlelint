@@ -24,12 +24,12 @@ func TestValidateCommand_DefaultFile(t *testing.T) {
 	// Capture the output of the command
 	output := executeCommand(testRootCmd, "validate", "../test_bundle")
 	println(output)
-	//
-	// // Check the output
-	// expected := "Validating configuration file: pyproject.toml\n"
-	// if output == expected {
-	// 	t.Errorf("Expected %q but got %q", expected, output)
-	// }
+
+	// Check the output
+	expected := "Validating configuration file: pyproject.toml\n"
+	if output == expected {
+		t.Errorf("Expected %q but got %q", expected, output)
+	}
 }
 
 // func TestValidateCommand_MissingFile(t *testing.T) {

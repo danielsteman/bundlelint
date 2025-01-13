@@ -3,11 +3,13 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
 
 func ValidateConfigs(bundleConfig *BundleConfig, lintConfig *LintConfig) bool {
+	// Placeholder validation logic
 	return true
 }
 
@@ -17,30 +19,32 @@ var validateCmd = &cobra.Command{
 	Long:  "Validate a Databricks asset bundle configuration file against user-defined rules.",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		configFile := "pyproject.toml"
+		bundleDir := "."
+		configFile := "./pyproject.toml"
 
-		if _, err := os.Stat(configFile); os.IsNotExist(err) {
-			fmt.Fprintf(cmd.OutOrStdout(), "pyproject.toml not found: %s\n", configFile)
-			return
-		}
-
-		var bundleDir string
 		if len(args) > 0 {
-			if args[0][0] == 47 { // if arg starts with slash (/)
+			if filepath.IsAbs(args[0]) {
 				bundleDir = args[0]
 			} else {
 				cwd, err := os.Getwd()
 				if err != nil {
-					fmt.Fprintf(cmd.OutOrStdout(), "Failed to get current working directory: %v", err)
+					fmt.Fprintf(cmd.OutOrStderr(), "Failed to get current working directory: %v\n", err)
+					return
 				}
-				bundleDir = cwd + "/" + args[0]
+				bundleDir = filepath.Join(cwd, args[0])
 			}
 		}
 
-		bundleConfigPath := bundleDir + "/databricks.yml"
+		fileInfo, err := os.Stat(bundleDir)
+		if os.IsNotExist(err) || !fileInfo.IsDir() {
+			fmt.Fprintf(cmd.OutOrStderr(), "Error: Bundle configuration directory not found: %s\n", bundleDir)
+			return
+		}
 
-		if _, err := os.Stat(bundleDir); os.IsNotExist(err) {
-			fmt.Fprintf(cmd.OutOrStdout(), "Bundle configuration not found: %s\n", bundleDir)
+		bundleConfigPath := filepath.Join(bundleDir, "databricks.yml")
+
+		if _, err := os.Stat(configFile); os.IsNotExist(err) {
+			fmt.Fprintf(cmd.OutOrStderr(), "Error: Lint config file not found: %s\n", configFile)
 			return
 		}
 
@@ -48,19 +52,17 @@ var validateCmd = &cobra.Command{
 
 		bundleConfig, err := ParseBundleConfig(bundleConfigPath)
 		if err != nil {
-			fmt.Fprintf(cmd.OutOrStdout(), "Error parsing bundle config: %s\n", err)
+			fmt.Fprintf(cmd.OutOrStderr(), "Error parsing bundle config: %s\n", err)
 			return
 		}
 
-		LintConfig, err := ParseLintConfig(configFile)
+		lintConfig, err := ParseLintConfig(configFile)
 		if err != nil {
-			fmt.Fprintf(cmd.OutOrStdout(), "Error parsing package config: %s\n", err)
+			fmt.Fprintf(cmd.OutOrStderr(), "Error parsing lint config: %s\n", err)
 			return
 		}
 
-		fmt.Println(LintConfig)
-
-		if ValidateConfigs(bundleConfig, LintConfig) {
+		if ValidateConfigs(bundleConfig, lintConfig) {
 			fmt.Fprintf(cmd.OutOrStdout(), "Validation successful!\n")
 		} else {
 			fmt.Fprintf(cmd.OutOrStdout(), "Validation failed!\n")
@@ -71,3 +73,4 @@ var validateCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(validateCmd)
 }
+

@@ -56,4 +56,3 @@ func ParseLintConfig(path string) (*LintConfig, error) {
 
 	return config.Tool.BundleLint, nil
 }
-
