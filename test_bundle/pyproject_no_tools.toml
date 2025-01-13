@@ -1,0 +1,6 @@
+[tool.poetry]
+name = "test_package"
+version = "0.0.1"
+description = ""
+authors = []
+
