@@ -84,6 +84,14 @@ func mergeBundleConfig(mainConfig, includedConfig *BundleConfig) {
 		mainConfig.Targets[key] = target
 	}
 	mainConfig.Include = append(mainConfig.Include, includedConfig.Include...)
+
+	if mainConfig.Jobs == nil {
+		mainConfig.Jobs = make(map[string]Job)
+	}
+
+	for key, job := range includedConfig.Jobs {
+		mainConfig.Jobs[key] = job
+	}
 }
 
 func ParseLintConfig(path string) (*LintConfig, error) {

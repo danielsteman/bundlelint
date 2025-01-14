@@ -59,5 +59,4 @@ func TestParseIncludedBundleConfig(t *testing.T) {
 	}
 
 	fmt.Println("Config:", string(prettyConfig))
-
 }
