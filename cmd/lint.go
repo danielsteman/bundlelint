@@ -9,11 +9,10 @@ import (
 )
 
 func ValidateConfigs(bundleConfig *BundleConfig, lintConfig *LintConfig) bool {
-
 	return true
 }
 
-var validateCmd = &cobra.Command{
+var lintCmd = &cobra.Command{
 	Use:   "lint [bundle_path]",
 	Short: "Lint a Databricks asset bundle config",
 	Long:  "Lint a Databricks asset bundle configuration file against user-defined rules.",
@@ -71,5 +70,5 @@ var validateCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(validateCmd)
+	rootCmd.AddCommand(lintCmd)
 }

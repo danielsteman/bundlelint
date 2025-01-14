@@ -19,7 +19,7 @@ func TestValidateCommand_DefaultFile(t *testing.T) {
 
 	// Initialize rootCmd with validateCmd
 	testRootCmd := &cobra.Command{Use: "bundlelint"}
-	testRootCmd.AddCommand(validateCmd)
+	testRootCmd.AddCommand(lintCmd)
 
 	// Capture the output of the command
 	output := executeCommand(testRootCmd, "validate", "../test_bundle")
