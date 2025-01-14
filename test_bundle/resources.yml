@@ -6,3 +6,6 @@ resources:
         - task_key: test_job
           spark_python_task:
             python_file: ./test_package/main.py
+        - task_key: notebook_test_task
+          notebook_task:
+            notebook_path: ./test_package/notebook.py

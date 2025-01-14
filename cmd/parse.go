@@ -25,9 +25,12 @@ type Target struct {
 
 type Task struct {
 	TaskKey         string `yaml:"task_key"`
-	SparkPythonTask struct {
+	SparkPythonTask *struct {
 		PythonFile string `yaml:"python_file"`
-	} `yaml:"spark_python_task"`
+	} `yaml:"spark_python_task,omitempty"`
+	NotebookTask *struct {
+		NotebookPath string `yaml:"notebook_path"`
+	} `yaml:"notebook_task,omitempty"`
 }
 
 type Job struct {
