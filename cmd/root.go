@@ -1,43 +1,73 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "bundlelint",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+var version = "1.0.0"
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
-}
+func NewRootCmd() *cobra.Command {
+	rootCmd := &cobra.Command{
+		Use:     "bundlelint [bundle_path]",
+		Short:   "A CLI to govern your Databricks asset bundles with flexibility",
+		Long:    `A CLI to govern your Databricks asset bundles with flexibility.`,
+		Version: version,
+		Args:    cobra.MaximumNArgs(1),
+		Run: func(c *cobra.Command, args []string) {
+			bundleDir := "."
+			configFile := "./pyproject.toml"
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	err := rootCmd.Execute()
-	if err != nil {
-		os.Exit(1)
+			if len(args) > 0 {
+				if filepath.IsAbs(args[0]) {
+					bundleDir = args[0]
+				} else {
+					cwd, err := os.Getwd()
+					if err != nil {
+						fmt.Fprintf(c.OutOrStderr(), "Failed to get current working directory: %v\n", err)
+						return
+					}
+					bundleDir = filepath.Join(cwd, args[0])
+				}
+			}
+
+			fileInfo, err := os.Stat(bundleDir)
+			if os.IsNotExist(err) || !fileInfo.IsDir() {
+				fmt.Fprintf(c.OutOrStderr(), "Error: Bundle configuration directory not found: %s\n", bundleDir)
+				return
+			}
+
+			bundleConfigPath := filepath.Join(bundleDir, "databricks.yml")
+
+			if _, err := os.Stat(configFile); os.IsNotExist(err) {
+				fmt.Fprintf(c.OutOrStderr(), "Error: Lint config file not found: %s\n", configFile)
+				return
+			}
+
+			fmt.Fprintf(c.OutOrStdout(), "Validating bundle configuration: %s\n", bundleDir)
+
+			bundleConfig, err := ParseBundleConfig(bundleConfigPath)
+			if err != nil {
+				fmt.Fprintf(c.OutOrStderr(), "Error parsing bundle config: %s\n", err)
+				return
+			}
+
+			lintConfig, err := ParseLintConfig(configFile)
+			if err != nil {
+				fmt.Fprintf(c.OutOrStderr(), "Error parsing lint config: %s\n", err)
+				return
+			}
+
+			if ValidateConfigs(bundleConfig, lintConfig) {
+				fmt.Fprintf(c.OutOrStdout(), "Validation successful!\n")
+			} else {
+				fmt.Fprintf(c.OutOrStdout(), "Validation failed!\n")
+			}
+		},
 	}
+	return rootCmd
 }
 
-func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.bundlelint.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-}

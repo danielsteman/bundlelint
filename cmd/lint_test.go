@@ -3,9 +3,8 @@ package cmd
 import (
 	"bytes"
 	"os"
+	"strings"
 	"testing"
-
-	"github.com/spf13/cobra"
 )
 
 func TestValidateCommand_DefaultFile(t *testing.T) {
@@ -18,43 +17,47 @@ notifications_in_prod = true`)
 	defer os.Remove(tempFile)
 
 	bundleDir := "test_bundle"
-	if err := os.Mkdir(bundleDir, 0755); err != nil {
+	if err := os.MkdirAll(bundleDir, 0755); err != nil {
 		t.Fatalf("Failed to create temporary bundle directory: %v", err)
 	}
 	defer os.RemoveAll(bundleDir)
 
 	bundleConfig := []byte(`
 bundle:
-  name: "Test Bundle"
+  name: "test_bundle"
 include: []
-targets: {}
-resources:
-  jobs: {}
+targets:
+  dev:
+    mode: "development"
+    default: true
+    workspace:
+      host: "https://workspace-id.cloud.databricks.com"
+resources: {}
 `)
 	bundleConfigPath := bundleDir + "/databricks.yml"
 	if err := os.WriteFile(bundleConfigPath, bundleConfig, 0644); err != nil {
 		t.Fatalf("Failed to create temporary bundle config file: %v", err)
 	}
 
-	testRootCmd := &cobra.Command{
-		Use: "bundlelint",
-		Run: rootCmd.Run,
+	output := new(bytes.Buffer)
+	rootCmd := NewRootCmd()
+	rootCmd.SetOut(output)
+	rootCmd.SetErr(output)
+	rootCmd.SetArgs([]string{bundleDir})
+
+	if err := rootCmd.Execute(); err != nil {
+		t.Fatalf("Command execution failed: %v", err)
 	}
 
-	output := executeCommand(testRootCmd, bundleDir)
-
-	expected := "Validating bundle configuration: test_bundle\nValidation successful!\n"
-	if output != expected {
-		t.Errorf("Expected %q but got %q", expected, output)
+	outputStr := output.String()
+	expectedParts := []string{
+		"Validating bundle configuration:",
+		"Validation successful!",
 	}
-}
 
-func executeCommand(root *cobra.Command, args ...string) string {
-	buf := new(bytes.Buffer)
-	root.SetOut(buf)
-	root.SetErr(buf)
-	root.SetArgs(args)
-
-	_ = root.Execute()
-	return buf.String()
+	for _, part := range expectedParts {
+		if !strings.Contains(outputStr, part) {
+			t.Errorf("Expected output to contain %q but it was not found in %q", part, outputStr)
+		}
+	}
 }
