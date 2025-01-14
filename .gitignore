@@ -198,3 +198,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Release builds
+**.tar
+**.tar.gz
