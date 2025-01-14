@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"testing"
 )
 
@@ -14,7 +13,7 @@ func TestParseBundleConfig(t *testing.T) {
 	}
 	prettyConfig, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
-		log.Fatalf("Failed to marshal config: %v", err)
+		t.Fatalf("Failed to marshal config: %v", err)
 	}
 
 	fmt.Println("Config:", string(prettyConfig))
@@ -35,7 +34,7 @@ func TestParseLintConfig(t *testing.T) {
 	}
 	prettyConfig, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
-		log.Fatalf("Failed to marshal config: %v", err)
+		t.Fatalf("Failed to marshal config: %v", err)
 	}
 
 	fmt.Println("Config:", string(prettyConfig))
@@ -64,5 +63,4 @@ func TestParseMinimalBundleConfig(t *testing.T) {
 	}
 
 	fmt.Println("Config:", string(prettyConfig))
-
 }
