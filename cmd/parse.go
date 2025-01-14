@@ -21,6 +21,7 @@ type Target struct {
 	Mode      string    `yaml:"mode"`
 	Default   bool      `yaml:"default,omitempty"`
 	Workspace Workspace `yaml:"workspace"`
+    Resources
 }
 
 type Task struct {
