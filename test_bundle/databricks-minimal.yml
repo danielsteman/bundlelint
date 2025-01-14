@@ -1,0 +1,13 @@
+bundle:
+  name: test_bundle
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://workspace-id.cloud.databricks.com
+  prod:
+    mode: production
+    workspace:
+      host: https://workspace-id.cloud.databricks.com

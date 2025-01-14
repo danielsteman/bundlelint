@@ -18,6 +18,11 @@ func TestParseBundleConfig(t *testing.T) {
 	}
 
 	fmt.Println("Config:", string(prettyConfig))
+
+	if config.Resources.Jobs == nil {
+		t.Fatalf("Failed to include jobs")
+	}
+
 }
 
 func TestParseLintConfig(t *testing.T) {
@@ -48,8 +53,8 @@ func TestParseLintConfigMissingTool(t *testing.T) {
 	}
 }
 
-func TestParseIncludedBundleConfig(t *testing.T) {
-	config, err := ParseBundleConfig("../test_bundle/databricks.yml")
+func TestParseMinimalBundleConfig(t *testing.T) {
+	config, err := ParseBundleConfig("../test_bundle/databricks-minimal.yml")
 	if err != nil {
 		t.Fatalf("Failed to parse bundle config: %v", err)
 	}
@@ -60,7 +65,4 @@ func TestParseIncludedBundleConfig(t *testing.T) {
 
 	fmt.Println("Config:", string(prettyConfig))
 
-	if config.Resources.Jobs == nil {
-		t.Fatalf("Failed to include jobs")
-	}
 }

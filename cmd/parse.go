@@ -21,7 +21,7 @@ type Target struct {
 	Mode      string    `yaml:"mode"`
 	Default   bool      `yaml:"default,omitempty"`
 	Workspace Workspace `yaml:"workspace"`
-    Resources
+	Resources
 }
 
 type Task struct {
@@ -34,9 +34,23 @@ type Task struct {
 	} `yaml:"notebook_task,omitempty"`
 }
 
+type WebhookNotification struct {
+	ID string `yaml:"id"`
+}
+
+type WebhookNotifications struct {
+	OnFailure []WebhookNotification `yaml:"on_failure,omitempty"`
+}
+type Schedule struct {
+	PauseStatus string `yaml:"pause_status,omitempty"`
+}
+
+
 type Job struct {
-	Name  string `yaml:"name"`
-	Tasks []Task `yaml:"tasks"`
+	Name                 string                `yaml:"name"`
+	Tasks                []Task                `yaml:"tasks"`
+	Schedule             *Schedule             `yaml:"schedule,omitempty"`
+	WebhookNotifications *WebhookNotifications `yaml:"webhook_notifications,omitempty"`
 }
 
 type Resources struct {
@@ -48,6 +62,10 @@ type BundleConfig struct {
 	Include []string          `yaml:"include"`
 	Targets map[string]Target `yaml:"targets"`
 	Resources
+}
+
+type TargetResources struct {
+	Jobs map[string]Job `yaml:"jobs"`
 }
 
 type LintConfig struct {
@@ -98,6 +116,30 @@ func mergeBundleConfig(mainConfig, includedConfig *BundleConfig) {
 	}
 }
 
+func mergeTargetResources(mainResources, includedResources *TargetResources) {
+	if mainResources == nil || includedResources == nil {
+		return
+	}
+
+	for key, job := range includedResources.Jobs {
+		if existingJob, exists := mainResources.Jobs[key]; exists {
+			mergeJob(&existingJob, &job)
+			mainResources.Jobs[key] = existingJob
+		} else {
+			mainResources.Jobs[key] = job
+		}
+	}
+}
+
+func mergeJob(mainJob, includedJob *Job) {
+	if includedJob.Schedule != nil {
+		mainJob.Schedule = includedJob.Schedule
+	}
+	if includedJob.WebhookNotifications != nil {
+		mainJob.WebhookNotifications = includedJob.WebhookNotifications
+	}
+}
+
 func ParseLintConfig(path string) (*LintConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -120,4 +162,3 @@ func ParseLintConfig(path string) (*LintConfig, error) {
 
 	return config.Tool.BundleLint, nil
 }
-
