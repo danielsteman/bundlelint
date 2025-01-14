@@ -14,9 +14,9 @@ func ValidateConfigs(bundleConfig *BundleConfig, lintConfig *LintConfig) bool {
 }
 
 var validateCmd = &cobra.Command{
-	Use:   "validate [bundle_path]",
-	Short: "Validate a Databricks asset bundle config",
-	Long:  "Validate a Databricks asset bundle configuration file against user-defined rules.",
+	Use:   "lint [bundle_path]",
+	Short: "Lint a Databricks asset bundle config",
+	Long:  "Lint a Databricks asset bundle configuration file against user-defined rules.",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		bundleDir := "."
