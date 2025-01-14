@@ -9,3 +9,18 @@ resources:
         - task_key: notebook_test_task
           notebook_task:
             notebook_path: ./test_package/notebook.py
+targets:
+  dev:
+    resources:
+      jobs:
+        test_job:
+          schedule:
+            pause_status: "PAUSED"
+
+  prod:
+    resources:
+      jobs:
+        test_job:
+          webhook_notifications:
+            on_failure:
+              - id: ee1801f7-1fd9-4316-b35c-aef18dafc2bc
