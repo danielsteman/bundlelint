@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/pelletier/go-toml/v2"
 	"gopkg.in/yaml.v2"
@@ -12,8 +13,37 @@ type BundleName struct {
 	Name string `yaml:"name"`
 }
 
+type Workspace struct {
+	Host string `yaml:"host"`
+}
+
+type Target struct {
+	Mode      string    `yaml:"mode"`
+	Default   bool      `yaml:"default,omitempty"`
+	Workspace Workspace `yaml:"workspace"`
+}
+
+type Task struct {
+	TaskKey         string `yaml:"task_key"`
+	SparkPythonTask struct {
+		PythonFile string `yaml:"python_file"`
+	} `yaml:"spark_python_task"`
+}
+
+type Job struct {
+	Name  string `yaml:"name"`
+	Tasks []Task `yaml:"tasks"`
+}
+
+type Resources struct {
+	Jobs map[string]Job `yaml:"jobs"`
+}
+
 type BundleConfig struct {
-	Bundle BundleName `yaml:"bundle"`
+	Bundle  BundleName        `yaml:"bundle"`
+	Include []string          `yaml:"include"`
+	Targets map[string]Target `yaml:"targets"`
+	Resources
 }
 
 type LintConfig struct {
@@ -31,7 +61,29 @@ func ParseBundleConfig(path string) (*BundleConfig, error) {
 		return nil, fmt.Errorf("failed to parse bundle config: %w", err)
 	}
 
+	if config.Include == nil {
+		config.Include = []string{}
+	}
+
+	baseDir := filepath.Dir(path)
+
+	for _, includePath := range config.Include {
+		absIncludePath := filepath.Join(baseDir, includePath)
+		includedConfig, err := ParseBundleConfig(absIncludePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse included config '%s': %w", includePath, err)
+		}
+		mergeBundleConfig(&config, includedConfig)
+	}
+
 	return &config, nil
+}
+
+func mergeBundleConfig(mainConfig, includedConfig *BundleConfig) {
+	for key, target := range includedConfig.Targets {
+		mainConfig.Targets[key] = target
+	}
+	mainConfig.Include = append(mainConfig.Include, includedConfig.Include...)
 }
 
 func ParseLintConfig(path string) (*LintConfig, error) {
@@ -56,3 +108,4 @@ func ParseLintConfig(path string) (*LintConfig, error) {
 
 	return config.Tool.BundleLint, nil
 }
+

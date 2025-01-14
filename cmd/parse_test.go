@@ -47,3 +47,17 @@ func TestParseLintConfigMissingTool(t *testing.T) {
 		t.Fatalf("Unexpected error message. Got: %v, want: %v", err.Error(), expectedError)
 	}
 }
+
+func TestParseIncludedBundleConfig(t *testing.T) {
+	config, err := ParseBundleConfig("../test_bundle/databricks.yml")
+	if err != nil {
+		t.Fatalf("Failed to parse bundle config: %v", err)
+	}
+	prettyConfig, err := json.MarshalIndent(config, "", "  ")
+	if err != nil {
+		log.Fatalf("Failed to marshal config: %v", err)
+	}
+
+	fmt.Println("Config:", string(prettyConfig))
+
+}
