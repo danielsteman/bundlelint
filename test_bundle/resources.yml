@@ -23,4 +23,4 @@ targets:
         test_job:
           webhook_notifications:
             on_failure:
-              - id: ee1801f7-1fd9-4316-b35c-aef18dafc2bc
+              - id: xxx

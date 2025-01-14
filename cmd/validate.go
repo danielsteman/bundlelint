@@ -9,7 +9,7 @@ import (
 )
 
 func ValidateConfigs(bundleConfig *BundleConfig, lintConfig *LintConfig) bool {
-	// Placeholder validation logic
+
 	return true
 }
 
