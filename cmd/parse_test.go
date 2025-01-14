@@ -55,8 +55,12 @@ func TestParseIncludedBundleConfig(t *testing.T) {
 	}
 	prettyConfig, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
-		log.Fatalf("Failed to marshal config: %v", err)
+		t.Fatalf("Failed to marshal config: %v", err)
 	}
 
 	fmt.Println("Config:", string(prettyConfig))
+
+	if config.Resources.Jobs == nil {
+		t.Fatalf("Failed to include jobs")
+	}
 }
