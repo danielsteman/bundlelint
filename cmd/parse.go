@@ -45,7 +45,6 @@ type Schedule struct {
 	PauseStatus string `yaml:"pause_status,omitempty"`
 }
 
-
 type Job struct {
 	Name                 string                `yaml:"name"`
 	Tasks                []Task                `yaml:"tasks"`
