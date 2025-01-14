@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+    
+
 	"github.com/spf13/cobra"
 )
 
@@ -14,9 +16,6 @@ var rootCmd = &cobra.Command{
 	Short:   "A CLI to govern your Databricks asset bundles with flexibility",
 	Long:    `A CLI to govern your Databricks asset bundles with flexibility. When the number of asset bundles in your company grows, you might want to set some rules. databricks-cli just validates the asset bundle config, but BundleLint checks if best practices are applied.`,
 	Version: version,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("BundleLint CLI v%s\n", version)
-	},
 }
 
 func main() {
