@@ -31,7 +31,7 @@ func NewRootCmd() *cobra.Command {
 						return
 					}
 					bundleDir = filepath.Join(cwd, args[0])
-                    configFile = filepath.Join(bundleDir, "pyproject.toml")
+					configFile = filepath.Join(bundleDir, "pyproject.toml")
 				}
 			}
 
@@ -48,7 +48,7 @@ func NewRootCmd() *cobra.Command {
 				return
 			}
 
-			fmt.Fprintf(c.OutOrStdout(), "Validating bundle configuration: %s\n", bundleDir)
+			fmt.Fprintf(c.OutOrStdout(), "Validating bundle configuration: %s\n", configFile)
 
 			bundleConfig, err := ParseBundleConfig(bundleConfigPath)
 			if err != nil {
@@ -63,12 +63,11 @@ func NewRootCmd() *cobra.Command {
 			}
 
 			if ValidateConfigs(bundleConfig, lintConfig) {
-				fmt.Fprintf(c.OutOrStdout(), "Validation successful!\n")
+				fmt.Fprintf(c.OutOrStdout(), "✅ Validation successful!\n")
 			} else {
-				fmt.Fprintf(c.OutOrStdout(), "Validation failed!\n")
+				fmt.Fprintf(c.OutOrStdout(), "❌ Validation failed!\n")
 			}
 		},
 	}
 	return rootCmd
 }
-

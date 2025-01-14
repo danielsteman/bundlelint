@@ -7,3 +7,10 @@ When the number of asset bundles in your Databricks instance grows, it becomes h
 A CLI tool build with Go, much like the `databricks-cli`, is easily distributed across several platforms and can be ran on demand, as a pre-commit hook or in a CI lint task.
 
 ## Example usage
+
+```bash
+>>> bundlelint test_bundle
+
+Validating bundle configuration: /Users/user/bundles/bundle/databricks.yml
+✅ Validation successful!
+```
