@@ -48,7 +48,7 @@ var rootCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Fprintf(c.OutOrStdout(), "Validating bundle configuration: %s\n", bundleDir)
+		fmt.Fprintf(c.OutOrStdout(), "Validating bundle configuration: %s\n", bundleConfigPath)
 
 		bundleConfig, err := cmd.ParseBundleConfig(bundleConfigPath)
 		if err != nil {
