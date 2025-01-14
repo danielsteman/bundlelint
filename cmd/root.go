@@ -31,6 +31,7 @@ func NewRootCmd() *cobra.Command {
 						return
 					}
 					bundleDir = filepath.Join(cwd, args[0])
+                    configFile = filepath.Join(bundleDir, "pyproject.toml")
 				}
 			}
 
