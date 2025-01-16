@@ -19,6 +19,15 @@ Or download the prebuilt binaries from the [releases](https://github.com/daniels
 
 ## Example usage
 
+Add a business rule to `bundle/pyproject.toml`:
+
+```toml
+[tool.bundlelint]
+notifications_in_prod = true
+```
+
+Lint your bundle: 
+
 ```bash
 >>> bundlelint test_bundle
 
